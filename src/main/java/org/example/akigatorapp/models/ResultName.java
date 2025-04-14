@@ -1,2 +1,7 @@
-package org.example.akigatorapp.models;public enum ResultName {
+package org.example.akigatorapp.models;
+
+public enum ResultName {
+    WIN,
+    LOSS,
+    UNRESOLVED
 }

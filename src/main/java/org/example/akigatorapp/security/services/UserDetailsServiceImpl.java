@@ -1,7 +1,7 @@
-package com.example.karatemanagementsystem.security.services;
+package org.example.akigatorapp.security.services;
 
-import com.example.karatemanagementsystem.model.User;
-import com.example.karatemanagementsystem.repository.UserRepository;
+import org.example.akigatorapp.models.UserEntity;
+import org.example.akigatorapp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,17 +10,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class UserDetailsServiceImpl  implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     UserRepository userRepository;
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user = userRepository.findByEmail(email).orElseThrow(
-                () -> new UsernameNotFoundException("User Not Found with -> email: " + email));
+        UserEntity user = userRepository.findByUsername(username).orElseThrow(
+                () -> new UsernameNotFoundException("User Not Found with -> username: " + username));
         return UserPrinciple.build(user);
     }
 

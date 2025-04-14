@@ -1,4 +1,4 @@
-package com.example.karatemanagementsystem.model;
+package org.example.akigatorapp.models;
 
 public enum RoleName {
     ROLE_USER,

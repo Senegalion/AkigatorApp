@@ -1,32 +1,31 @@
-package com.example.karatemanagementsystem.model;
+package org.example.akigatorapp.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NaturalId;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "roles")
 public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "role_id")
+    private Long role_id;
 
     @Enumerated(EnumType.STRING)
     @NaturalId
+    @Column(name = "name")
     private RoleName name;
 
-    public Role() {
+    public RoleName getName() {
+        return name;
     }
 
-    public Role(RoleName name) {
-        this.name = name;
-    }
 
-    public Role(Long id, RoleName name) {
-        this.id = id;
-        this.name = name;
-    }
 }

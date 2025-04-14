@@ -1,9 +1,8 @@
-package com.example.karatemanagementsystem.security.services;
+package org.example.akigatorapp.security.services;
 
-import com.example.karatemanagementsystem.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
-import lombok.Setter;
+import org.example.akigatorapp.models.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,14 +14,15 @@ import java.util.stream.Collectors;
 
 public class UserPrinciple implements UserDetails {
 
-    private Long id;
+    @Getter
+    private final Long id;
 
-    private String username;
+    private final String username;
 
     @JsonIgnore
-    private String password;
+    private final String password;
 
-    private Collection<? extends GrantedAuthority> authorities;
+    private final Collection<? extends GrantedAuthority> authorities;
 
     public UserPrinciple(Long id, String username, String password, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
@@ -31,21 +31,17 @@ public class UserPrinciple implements UserDetails {
         this.authorities = authorities;
     }
 
-    public static UserPrinciple build(User user) {
+    public static UserPrinciple build(UserEntity user) {
         List<GrantedAuthority> authorities = user.getRoles().stream().map(role ->
                 new SimpleGrantedAuthority(role.getName().name())
         ).collect(Collectors.toList());
 
         return new UserPrinciple(
-                user.getId(),
-                user.getEmail(),
+                user.getUserId(),
+                user.getUsername(),
                 user.getPassword(),
                 authorities
         );
-    }
-
-    public Long getId() {
-        return id;
     }
 
     @Override

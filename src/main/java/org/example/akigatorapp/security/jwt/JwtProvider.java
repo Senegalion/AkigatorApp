@@ -1,7 +1,7 @@
-package com.example.karatemanagementsystem.security.jwt;
+package org.example.akigatorapp.security.jwt;
 
-import com.example.karatemanagementsystem.security.services.UserPrinciple;
 import io.jsonwebtoken.*;
+import org.example.akigatorapp.security.services.UserPrinciple;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -11,10 +11,10 @@ import java.util.Date;
 @Component
 public class JwtProvider {
 
-    @Value("${pl.dmcs.rkotas.jwtSecret}")
+    @Value("${security.jwt.secret-key}")
     private String jwtSecret;
 
-    @Value("${pl.dmcs.rkotas.jwtExpiration}")
+    @Value("${security.jwt.expiration-time}")
     private int jwtExpiration;
 
     public String generateJwtToken(Authentication authentication) {
@@ -23,7 +23,7 @@ public class JwtProvider {
         return Jwts.builder()
                 .setSubject(userPrinciple.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpiration * 1000))
+                .setExpiration(new Date((new Date()).getTime() + jwtExpiration * 1000L))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }

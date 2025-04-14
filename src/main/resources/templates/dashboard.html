@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+</head>
+<body class="container mt-5">
+
+<div class="card shadow-lg p-4 text-center">
+    <h2 class="text-primary">Welcome, <span th:text="${username}"></span>!</h2>
+
+    <div class="mt-4">
+        <a href="/game/new-session" class="btn btn-primary btn-lg me-2">Create New Game Session</a>
+
+        <a th:if="${isAuthenticated}" href="/game/game-sessions" class="btn btn-secondary btn-lg">View Previous Sessions</a>
+    </div>
+
+    <form method="post" action="/auth/logout" class="mt-4">
+        <button type="submit" class="btn btn-danger btn-lg">Logout</button>
+    </form>
+</div>
+
+</body>
+</html>

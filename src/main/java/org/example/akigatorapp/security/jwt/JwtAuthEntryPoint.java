@@ -1,4 +1,4 @@
-package com.example.karatemanagementsystem.security.jwt;
+package org.example.akigatorapp.security.jwt;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

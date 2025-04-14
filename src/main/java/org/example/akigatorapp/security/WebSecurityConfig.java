@@ -1,8 +1,8 @@
-package com.example.karatemanagementsystem.security;
+package org.example.akigatorapp.security;
 
-import com.example.karatemanagementsystem.security.jwt.JwtAuthEntryPoint;
-import com.example.karatemanagementsystem.security.jwt.JwtAuthTokenFilter;
-import com.example.karatemanagementsystem.security.services.UserDetailsServiceImpl;
+import org.example.akigatorapp.security.jwt.JwtAuthEntryPoint;
+import org.example.akigatorapp.security.jwt.JwtAuthTokenFilter;
+import org.example.akigatorapp.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,7 +35,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    DaoAuthenticationProvider authProvider(){
+    DaoAuthenticationProvider authProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
@@ -51,27 +51,36 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/users/**").permitAll()
-                        .requestMatchers("/admin/**").permitAll()
-                        .requestMatchers("/trainings/**").permitAll()
-                        .requestMatchers("/feedbacks/**").permitAll()
-                        .requestMatchers("/addresses/**").permitAll()
-                        .requestMatchers("/karateclubs/**").permitAll()
-                        .requestMatchers("/error").permitAll()
-                        .requestMatchers("/exampleSecurity/user").hasRole("USER")
-                        .requestMatchers("/exampleSecurity/admin").hasRole("ADMIN")
+                        .requestMatchers("/", "/home", "/auth/register", "/auth/login", "/auth/signup", "/auth/signin", "/auth/success", "/auth/forgot-password", "/auth/reset-password").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/bootstrap/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/auth/dashboard", "/auth/logout", "/game/**").authenticated()
                         .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage("/auth/login")
+                        .defaultSuccessUrl("/auth/dashboard", true)
+                        .failureUrl("/auth/login?error=true")
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/auth/logout")
+                        .logoutSuccessUrl("/auth/login?logout=true")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
                 )
                 .exceptionHandling(unauthorized -> unauthorized
                         .authenticationEntryPoint(unauthorizedHandler)
                 )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -79,9 +88,9 @@ public class WebSecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:4200")
+                        .allowedOrigins("http://localhost:3000")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
+                        .allowedHeaders("Authorization", "Content-Type")
                         .allowCredentials(true)
                         .maxAge(3600);
             }

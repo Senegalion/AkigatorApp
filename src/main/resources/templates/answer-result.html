@@ -1,0 +1,13 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Answer Result</title>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+</head>
+<body class="container mt-5">
+<h2>Result</h2>
+<p th:if="${isCorrect}" class="text-success">Correct!</p>
+<p th:unless="${isCorrect}" class="text-danger">Wrong! The correct answer was <span th:text="${question.getCorrectAnswer().response}"></span></p>
+
+<a th:href="@{/game/play(sessionId=${sessionId})}" class="btn btn-primary">Next Question</a>
+</body>
+</html>

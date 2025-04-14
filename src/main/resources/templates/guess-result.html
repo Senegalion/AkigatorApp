@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Guess Result</title>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+</head>
+<body class="container mt-5 text-center">
+
+<h2 class="text-primary">Our Guess</h2>
+<p class="lead" th:text="'We think you were thinking about: ' + ${guess}"></p>
+
+<form method="post" action="/game/guess-result">
+    <input type="hidden" name="sessionId" th:value="${sessionId}" />
+
+    <button type="submit" name="correct" value="true" class="btn btn-success mt-3">Yes, Correct!</button>
+    <button type="submit" name="correct" value="false" class="btn btn-danger mt-3">No, Incorrect</button>
+</form>
+
+</body>
+</html>

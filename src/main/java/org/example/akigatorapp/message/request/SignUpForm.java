@@ -1,19 +1,11 @@
-package com.example.karatemanagementsystem.message.request;
+package org.example.akigatorapp.message.request;
 
-import com.example.karatemanagementsystem.model.Address;
-import com.example.karatemanagementsystem.model.KarateClub;
-import com.example.karatemanagementsystem.model.KarateClubName;
-import com.example.karatemanagementsystem.model.KarateRank;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Set;
 
-@Getter
-@Setter
 public class SignUpForm {
     @NotBlank
     @Size(min = 3, max = 50)
@@ -24,16 +16,8 @@ public class SignUpForm {
     private String surname;
 
     @NotBlank
-    private String dateOfBirth;
-
-    private Address address;
-
-    @Size(min = 11, max = 11)
-    private String pesel;
-
-    private KarateClubName karateClubName;
-
-    private KarateRank karateRank;
+    @Size(min = 3, max = 50)
+    private String username;
 
     @Email
     private String email;
@@ -43,4 +27,52 @@ public class SignUpForm {
     @NotBlank
     @Size(min = 6, max = 40)
     private String password;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Set<String> getRole() {
+        return role;
+    }
+
+    public void setRole(Set<String> role) {
+        this.role = role;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

@@ -1,8 +1,10 @@
-package com.example.karatemanagementsystem.message.response;
+package org.example.akigatorapp.message.response;
 
 import lombok.Getter;
 import lombok.Setter;
 
+@Setter
+@Getter
 public class ResponseMessage {
 
     private String message;
@@ -11,11 +13,4 @@ public class ResponseMessage {
         this.message = message;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
 }

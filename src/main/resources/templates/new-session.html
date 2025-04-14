@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>New Game Session</title>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+</head>
+<body class="container mt-5">
+
+<h2 class="text-primary">Select a Category</h2>
+
+<form method="post" action="/game/start" class="mt-4">
+    <div class="form-group">
+        <label class="form-label">Select Category:</label>
+        <select name="category" class="form-select" required>
+            <option th:each="category : ${categories}"
+                    th:value="${category.categoryId}"
+                    th:text="${category.name}">
+            </option>
+        </select>
+    </div>
+
+    <div class="mt-3">
+        <span th:if="${username != null}" class="text-success fw-bold" th:text="'Logged in as: ' + ${username}"></span>
+        <span th:if="${username == null}" class="text-danger fw-bold">User not logged in</span>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Start Game</button>
+</form>
+
+</body>
+</html>

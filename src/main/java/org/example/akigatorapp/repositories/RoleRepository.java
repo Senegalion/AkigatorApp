@@ -1,7 +1,7 @@
-package com.example.karatemanagementsystem.repository;
+package org.example.akigatorapp.repositories;
 
-import com.example.karatemanagementsystem.model.Role;
-import com.example.karatemanagementsystem.model.RoleName;
+import org.example.akigatorapp.models.Role;
+import org.example.akigatorapp.models.RoleName;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

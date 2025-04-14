@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Game Sessions</title>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+</head>
+<body class="container mt-5">
+<h2>Previous Game Sessions</h2>
+
+<h3>Top 3 Sessions (WIN)</h3>
+<table class="table table-striped mt-3">
+    <thead>
+    <tr>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Completed</th>
+        <th>Duration</th>
+        <th>Result</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="gameSession : ${topSessions}">
+        <td th:text="${gameSession.formattedStartTime}"></td>
+        <td th:text="${gameSession.formattedEndTime}"></td>
+        <td th:text="${gameSession.completed ? 'Yes' : 'No'}"></td>
+        <td th:text="${gameSession.duration}"></td>
+        <td th:text="${gameSession.result}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<h3>All WIN Sessions</h3>
+<table class="table table-striped mt-3">
+    <thead>
+    <tr>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Completed</th>
+        <th>Duration</th>
+        <th>Result</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="gameSession : ${winSessions}">
+        <td th:text="${gameSession.formattedStartTime}"></td>
+        <td th:text="${gameSession.formattedEndTime}"></td>
+        <td th:text="${gameSession.completed ? 'Yes' : 'No'}"></td>
+        <td th:text="${gameSession.duration}"></td>
+        <td th:text="${gameSession.result}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<h3>All LOSS Sessions</h3>
+<table class="table table-striped mt-3">
+    <thead>
+    <tr>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Completed</th>
+        <th>Duration</th>
+        <th>Result</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="gameSession : ${lossSessions}">
+        <td th:text="${gameSession.formattedStartTime}"></td>
+        <td th:text="${gameSession.formattedEndTime}"></td>
+        <td th:text="${gameSession.completed ? 'Yes' : 'No'}"></td>
+        <td th:text="${gameSession.duration}"></td>
+        <td th:text="${gameSession.result}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<a href="/auth/dashboard" class="btn btn-primary">Back to Dashboard</a>
+</body>
+</html>

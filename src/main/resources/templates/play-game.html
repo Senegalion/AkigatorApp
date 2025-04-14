@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Play Game</title>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+</head>
+<body class="container mt-5">
+
+<h2 class="text-primary">Question</h2>
+<p class="lead" th:text="${question.content}"></p>
+
+<form method="post" action="/game/answer" class="mt-4">
+    <input type="hidden" name="sessionId" th:value="${sessionId}" />
+    <input type="hidden" name="questionId" th:value="${question.questionId}" />
+    <input type="hidden" name="nextQuestionId" th:value="${nextQuestionId}" />
+
+    <div class="form-group">
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="answer" value="YES" id="yes" required>
+            <label class="form-check-label" for="yes">YES</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="answer" value="NO" id="no" required>
+            <label class="form-check-label" for="no">NO</label>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success mt-3">Submit Answer</button>
+</form>
+
+</body>
+</html>
