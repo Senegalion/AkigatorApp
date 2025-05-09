@@ -51,7 +51,7 @@ CREATE TABLE game_sessions
     start_time      TIMESTAMP   NOT NULL,
     end_time        TIMESTAMP   NOT NULL,
     completed       BOOLEAN     NOT NULL DEFAULT FALSE,
-    result          VARCHAR(32) NOT NULL CHECK (result IN ('WIN', 'LOSS', 'UNRESOLVED')),
+    result          VARCHAR(32) NOT NULL,
     PRIMARY KEY (game_session_id),
     CONSTRAINT fk_game_session_user
         FOREIGN KEY (user_id)
@@ -66,7 +66,7 @@ CREATE TABLE answers
     answer_id   SERIAL      NOT NULL,
     question_id INT         NOT NULL,
     entity_id   INT         NOT NULL,
-    response    VARCHAR(32) NOT NULL CHECK (response IN ('YES', 'NO', 'DONT_KNOW', 'PROBABLY_YES', 'PROBABLY_NO')),
+    response    VARCHAR(32) NOT NULL,
     PRIMARY KEY (answer_id),
     CONSTRAINT fk_answer_question
         FOREIGN KEY (question_id)
@@ -81,8 +81,7 @@ CREATE TABLE game_questions
     game_question_id SERIAL      NOT NULL,
     game_session_id  INT         NOT NULL,
     question_id      INT         NOT NULL,
-    user_response    VARCHAR(32) NOT NULL CHECK (user_response IN
-                                                 ('YES', 'NO', 'DONT_KNOW', 'PROBABLY_YES', 'PROBABLY_NO')),
+    user_response    VARCHAR(32) NOT NULL,
     PRIMARY KEY (game_question_id),
     CONSTRAINT fk_game_questions_game_session
         FOREIGN KEY (game_session_id)

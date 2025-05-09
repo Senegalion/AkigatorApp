@@ -127,4 +127,7 @@ public class UserEntity {
     public void setGameSessions(Set<GameSessionEntity> gameSessions) {
         this.gameSessions = gameSessions;
     }
+
+    public UserEntity() {
+    }
 }

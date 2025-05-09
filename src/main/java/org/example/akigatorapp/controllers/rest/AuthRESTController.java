@@ -13,8 +13,8 @@ import org.example.akigatorapp.security.jwt.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,15 +32,15 @@ public class AuthRESTController {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
-    private final DaoAuthenticationProvider daoAuthenticationProvider;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public AuthRESTController(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtProvider jwtProvider, DaoAuthenticationProvider daoAuthenticationProvider) {
+    public AuthRESTController(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtProvider jwtProvider, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
-        this.daoAuthenticationProvider = daoAuthenticationProvider;
+        this.authenticationManager = authenticationManager;
     }
 
     @PostMapping("/signup")
@@ -74,7 +74,7 @@ public class AuthRESTController {
     @PostMapping("/signin")
     public ResponseEntity<?> login(@RequestBody @Valid LoginForm loginRequest) {
         try {
-            Authentication authentication = daoAuthenticationProvider.authenticate(
+            Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
             SecurityContextHolder.getContext().setAuthentication(authentication);

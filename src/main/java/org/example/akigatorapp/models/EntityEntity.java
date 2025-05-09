@@ -31,4 +31,7 @@ public class EntityEntity {
     @JoinColumn(name = "category_id")
     private CategoryEntity category;
 
+    public String getName() {
+        return name;
+    }
 }

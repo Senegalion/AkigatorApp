@@ -17,7 +17,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/game")
@@ -213,7 +212,7 @@ public class GameController {
                 .sorted((s1, s2) -> s2.getStartTime().compareTo(s1.getStartTime()))
                 .toList();
 
-        List<GameSessionEntity> topSessions = winSessions.stream().limit(3).collect(Collectors.toList());
+        List<GameSessionEntity> topSessions = winSessions.stream().limit(3).toList();
 
         model.addAttribute("topSessions", topSessions);
         model.addAttribute("winSessions", winSessions);

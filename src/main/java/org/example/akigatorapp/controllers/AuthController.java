@@ -13,6 +13,7 @@ import org.example.akigatorapp.repositories.UserRepository;
 import org.example.akigatorapp.security.jwt.JwtProvider;
 import org.example.akigatorapp.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -31,7 +32,7 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
-    private final DaoAuthenticationProvider daoAuthenticationProvider;
+    private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
@@ -39,9 +40,9 @@ public class AuthController {
     private final EmailService emailService;
 
     @Autowired
-    public AuthController(DaoAuthenticationProvider daoAuthenticationProvider, UserRepository userRepository, RoleRepository roleRepository,
+    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository,
                           PasswordEncoder passwordEncoder, JwtProvider jwtProvider, EmailService emailService) {
-        this.daoAuthenticationProvider = daoAuthenticationProvider;
+        this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -100,7 +101,7 @@ public class AuthController {
     @PostMapping("/signin")
     public String login(@ModelAttribute("loginForm") LoginForm loginRequest, Model model, HttpServletRequest request) {
         try {
-            Authentication authentication = daoAuthenticationProvider.authenticate(
+            Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
