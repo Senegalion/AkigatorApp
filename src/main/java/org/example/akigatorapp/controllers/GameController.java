@@ -191,8 +191,10 @@ public class GameController {
             return "error";
         }
 
-        Long trueAnswerId = selectedAnswer.get().getAnswerId();
-        runPythonScript("next", trueAnswerId);
+        ScriptResult result = runPythonScript("next", selectedAnswer.get().getAnswerId());
+        if (result.getGuess() != null && !result.getGuess().isBlank()) {
+            return "redirect:/game/guess?sessionId=" + sessionId;
+        }
 
         List<QuestionEntity> updatedQuestions = questionRepository.findByCategory(sessionOptional.get().getCategory());
 
@@ -201,7 +203,6 @@ public class GameController {
         }
 
         QuestionEntity newestQuestion = updatedQuestions.get(updatedQuestions.size() - 1);
-
         return "redirect:/game/play?sessionId=" + sessionId + "&questionId=" + newestQuestion.getQuestionId();
     }
 
