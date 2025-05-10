@@ -1,0 +1,1 @@
+ALTER TABLE game_sessions ALTER COLUMN end_time DROP NOT NULL;

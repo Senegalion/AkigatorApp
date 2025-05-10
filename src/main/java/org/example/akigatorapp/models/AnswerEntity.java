@@ -20,10 +20,9 @@ public class AnswerEntity {
     @Column(name = "answer_id", nullable = false)
     private Long answerId;
 
-    @Enumerated(EnumType.STRING)
     @NaturalId
     @Column(name = "response", nullable = false)
-    private ResponseName response;
+    private String response;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
@@ -33,4 +32,35 @@ public class AnswerEntity {
     @JoinColumn(name = "entity_id")
     private EntityEntity entity;
 
+    public Long getAnswerId() {
+        return answerId;
+    }
+
+    public void setAnswerId(Long answerId) {
+        this.answerId = answerId;
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
+    }
+
+    public QuestionEntity getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(QuestionEntity question) {
+        this.question = question;
+    }
+
+    public EntityEntity getEntity() {
+        return entity;
+    }
+
+    public void setEntity(EntityEntity entity) {
+        this.entity = entity;
+    }
 }

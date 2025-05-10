@@ -36,4 +36,51 @@ public class CategoryEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
     private Set<EntityEntity> entities;
 
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Set<GameSessionEntity> getGameSession() {
+        return gameSession;
+    }
+
+    public void setGameSession(Set<GameSessionEntity> gameSession) {
+        this.gameSession = gameSession;
+    }
+
+    public Set<QuestionEntity> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(Set<QuestionEntity> questions) {
+        this.questions = questions;
+    }
+
+    public Set<EntityEntity> getEntities() {
+        return entities;
+    }
+
+    public void setEntities(Set<EntityEntity> entities) {
+        this.entities = entities;
+    }
 }

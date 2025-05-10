@@ -12,11 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 @Controller
 @RequestMapping("/game")
@@ -27,17 +28,17 @@ public class GameController {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final EntityRepository entityRepository;
+    private final AnswerRepository answerRepository;
 
     @Autowired
-    public GameController(GameSessionRepository gameSessionRepository, QuestionRepository questionRepository, CategoryRepository categoryRepository, UserRepository userRepository, EntityRepository entityRepository) {
+    public GameController(GameSessionRepository gameSessionRepository, QuestionRepository questionRepository, CategoryRepository categoryRepository, UserRepository userRepository, EntityRepository entityRepository, AnswerRepository answerRepository) {
         this.gameSessionRepository = gameSessionRepository;
         this.questionRepository = questionRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
         this.entityRepository = entityRepository;
+        this.answerRepository = answerRepository;
     }
-
-    private final Random random = new Random();
 
     @GetMapping("/new-session")
     public String newSessionPage(Model model) {
@@ -65,6 +66,8 @@ public class GameController {
         }
         CategoryEntity category = categoryOptional.get();
 
+        runPythonScript("start", null);
+
         GameSessionEntity session = new GameSessionEntity();
         session.setUser(user);
         session.setCategory(category);
@@ -72,27 +75,59 @@ public class GameController {
         session.setEndTime(null);
         session.setCompleted(false);
         session.setResult(ResultName.UNRESOLVED);
-
         gameSessionRepository.save(session);
+        gameSessionRepository.flush();
+
 
         return "redirect:/game/play?sessionId=" + session.getGameSessionId();
+    }
+
+    private String runPythonScript(String mode, Long answerId) {
+        try {
+            ProcessBuilder pb;
+
+            if (answerId == null) {
+                pb = new ProcessBuilder("python", "C:\\AkigatorML\\AkigatorApp\\ml_service.py", "--mode", mode);
+            } else {
+                pb = new ProcessBuilder("python", "C:\\AkigatorML\\AkigatorApp\\ml_service.py", "--mode", mode, "--answer_id", String.valueOf(answerId));
+            }
+
+            Process process = pb.start();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            StringBuilder output = new StringBuilder();
+
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+
+
+            int exitCode = process.waitFor();
+            if (exitCode == 0) {
+                return output.toString();
+            } else {
+                return "Error executing Python script: Exit code " + exitCode;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error running Python script: " + e.getMessage();
+        }
     }
 
     @GetMapping("/play")
     public String playGame(@RequestParam("sessionId") Long sessionId,
                            @RequestParam(value = "questionId", required = false) Long questionId,
                            Model model) {
-
         Optional<GameSessionEntity> sessionOptional = gameSessionRepository.findByGameSessionId(sessionId);
         if (sessionOptional.isEmpty()) {
             return "error";
         }
 
         GameSessionEntity session = sessionOptional.get();
-
         List<QuestionEntity> questions = questionRepository.findByCategory(session.getCategory());
         if (questions.isEmpty()) {
-            return "error";
+            return "error";  // No questions available in this category
         }
 
         QuestionEntity currentQuestion = null;
@@ -100,27 +135,26 @@ public class GameController {
             Optional<QuestionEntity> currentQuestionOptional = questions.stream()
                     .filter(q -> q.getQuestionId().equals(questionId))
                     .findFirst();
-            if (currentQuestionOptional.isPresent()) {
-                currentQuestion = currentQuestionOptional.get();
-            }
+            currentQuestion = currentQuestionOptional.orElse(null);
         } else {
-            currentQuestion = questions.get(0);
+            currentQuestion = questions.get(0);  // Default to the first question
         }
 
         if (currentQuestion == null) {
-            return "error";
+            return "error";  // If no question found, return an error
         }
 
+        // Determine the next question, if any
         int currentIndex = questions.indexOf(currentQuestion);
-        if (currentIndex == questions.size() - 1) {
-            return "redirect:/game/guess?sessionId=" + sessionId;
-        }
+        QuestionEntity nextQuestion = (currentIndex < questions.size() - 1) ? questions.get(currentIndex + 1) : null;
 
-        QuestionEntity nextQuestion = questions.get(currentIndex + 1);
+        // Fetch possible answers for the current question
+        List<AnswerEntity> possibleAnswers = answerRepository.findByQuestion(currentQuestion);
 
         model.addAttribute("sessionId", sessionId);
         model.addAttribute("question", currentQuestion);
-        model.addAttribute("nextQuestionId", nextQuestion.getQuestionId());
+        model.addAttribute("nextQuestionId", nextQuestion != null ? nextQuestion.getQuestionId() : null);
+        model.addAttribute("answers", possibleAnswers);
 
         return "play-game";
     }
@@ -137,9 +171,11 @@ public class GameController {
         if (sessionOptional.isEmpty()) {
             return "error";
         }
+
+        String result = runPythonScript("next", questionId);
+
         return "redirect:/game/play?sessionId=" + sessionId + "&questionId=" + nextQuestionId;
     }
-
 
     @GetMapping("/guess")
     public String makeGuess(@RequestParam("sessionId") Long sessionId, Model model) {

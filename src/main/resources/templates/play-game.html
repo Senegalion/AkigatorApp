@@ -15,13 +15,9 @@
     <input type="hidden" name="nextQuestionId" th:value="${nextQuestionId}" />
 
     <div class="form-group">
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="answer" value="YES" id="yes" required>
-            <label class="form-check-label" for="yes">YES</label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input" type="radio" name="answer" value="NO" id="no" required>
-            <label class="form-check-label" for="no">NO</label>
+        <div th:each="answer : ${answers}" class="form-check">
+            <input class="form-check-input" type="radio" name="answer" th:value="${answer.response}" th:id="${'answer-' + answer.answerId}" required>
+            <label class="form-check-label" th:for="${'answer-' + answer.answerId}" th:text="${answer.response}"></label>
         </div>
     </div>
 

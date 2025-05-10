@@ -20,10 +20,9 @@ public class GameQuestionEntity {
     @Column(name = "game_question_id", nullable = false)
     private Long gameQuestionId;
 
-    @Enumerated(EnumType.STRING)
     @NaturalId
     @Column(name = "user_response", nullable = false)
-    private ResponseName userResponse;
+    private String userResponse;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_session_id")
