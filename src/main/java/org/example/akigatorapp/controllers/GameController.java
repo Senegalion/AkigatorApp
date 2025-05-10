@@ -82,7 +82,7 @@ public class GameController {
         return "redirect:/game/play?sessionId=" + session.getGameSessionId();
     }
 
-    private String runPythonScript(String mode, Long answerId) {
+    private ScriptResult runPythonScript(String mode, Long answerId) {
         try {
             ProcessBuilder pb;
 
@@ -97,21 +97,25 @@ public class GameController {
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             StringBuilder output = new StringBuilder();
+            String guess = null;
 
             while ((line = reader.readLine()) != null) {
                 output.append(line).append("\n");
+                if (line.startsWith("GUESS=")) {
+                    guess = line.substring(6).trim();
+                }
             }
 
 
             int exitCode = process.waitFor();
             if (exitCode == 0) {
-                return output.toString();
+                return new ScriptResult(output.toString(), guess);
             } else {
-                return "Error executing Python script: Exit code " + exitCode;
+                return new ScriptResult("Error: Exit code " + exitCode, null);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return "Error running Python script: " + e.getMessage();
+            return new ScriptResult("Error running Python script: " + e.getMessage(), null);
         }
     }
 
@@ -182,13 +186,23 @@ public class GameController {
             return "error";
         }
 
-        runPythonScript("next", selectedAnswerId);
+        Optional<AnswerEntity> selectedAnswer = answerRepository.findById(selectedAnswerId);
+        if (selectedAnswer.isEmpty()) {
+            return "error";
+        }
 
-        if (nextQuestionId == null) {
+        Long trueAnswerId = selectedAnswer.get().getAnswerId();
+        runPythonScript("next", trueAnswerId);
+
+        List<QuestionEntity> updatedQuestions = questionRepository.findByCategory(sessionOptional.get().getCategory());
+
+        if (updatedQuestions.isEmpty()) {
             return "redirect:/game/guess?sessionId=" + sessionId;
         }
 
-        return "redirect:/game/play?sessionId=" + sessionId + "&questionId=" + nextQuestionId;
+        QuestionEntity newestQuestion = updatedQuestions.get(updatedQuestions.size() - 1);
+
+        return "redirect:/game/play?sessionId=" + sessionId + "&questionId=" + newestQuestion.getQuestionId();
     }
 
     @GetMapping("/guess")
@@ -197,17 +211,13 @@ public class GameController {
         if (sessionOptional.isEmpty()) {
             return "error";
         }
-        GameSessionEntity session = sessionOptional.get();
-        List<EntityEntity> entities = entityRepository.findByCategory(session.getCategory());
-        String guess = makeGuessBasedOnAnswers(session, entities);
+
+        ScriptResult scriptResult = runPythonScript("next", null);
+        String guess = scriptResult.getGuess() != null ? scriptResult.getGuess() : "Unknown Character";
 
         model.addAttribute("sessionId", sessionId);
         model.addAttribute("guess", guess);
         return "guess-result";
-    }
-
-    private String makeGuessBasedOnAnswers(GameSessionEntity session, List<EntityEntity> entities) {
-        return entities.isEmpty() ? "Unknown Character" : entities.get(0).getName();
     }
 
     @PostMapping("/guess-result")
