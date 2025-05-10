@@ -127,7 +127,7 @@ public class GameController {
         GameSessionEntity session = sessionOptional.get();
         List<QuestionEntity> questions = questionRepository.findByCategory(session.getCategory());
         if (questions.isEmpty()) {
-            return "error";  // No questions available in this category
+            return "error";
         }
 
         QuestionEntity currentQuestion = null;
@@ -137,18 +137,16 @@ public class GameController {
                     .findFirst();
             currentQuestion = currentQuestionOptional.orElse(null);
         } else {
-            currentQuestion = questions.get(0);  // Default to the first question
+            currentQuestion = questions.get(0);
         }
 
         if (currentQuestion == null) {
-            return "error";  // If no question found, return an error
+            return "error";
         }
 
-        // Determine the next question, if any
         int currentIndex = questions.indexOf(currentQuestion);
         QuestionEntity nextQuestion = (currentIndex < questions.size() - 1) ? questions.get(currentIndex + 1) : null;
 
-        // Fetch possible answers for the current question
         List<AnswerEntity> possibleAnswers = answerRepository.findByQuestion(currentQuestion);
 
         model.addAttribute("sessionId", sessionId);
@@ -163,8 +161,8 @@ public class GameController {
     @PostMapping("/answer")
     public String answerQuestion(@RequestParam("sessionId") Long sessionId,
                                  @RequestParam("questionId") Long questionId,
-                                 @RequestParam("answer") String answer,
-                                 @RequestParam("nextQuestionId") Long nextQuestionId,
+                                 @RequestParam("answer") Long selectedAnswerId,
+                                 @RequestParam(value = "nextQuestionId", required = false) Long nextQuestionId,
                                  Model model) {
 
         Optional<GameSessionEntity> sessionOptional = gameSessionRepository.findByGameSessionId(sessionId);
@@ -172,7 +170,23 @@ public class GameController {
             return "error";
         }
 
-        String result = runPythonScript("next", questionId);
+        Optional<QuestionEntity> questionOptional = questionRepository.findById(questionId);
+        if (questionOptional.isEmpty()) {
+            return "error";
+        }
+
+        QuestionEntity question = questionOptional.get();
+        List<AnswerEntity> answers = answerRepository.findByQuestion(question);
+
+        if (answers.stream().noneMatch(a -> a.getAnswerId().equals(selectedAnswerId))) {
+            return "error";
+        }
+
+        runPythonScript("next", selectedAnswerId);
+
+        if (nextQuestionId == null) {
+            return "redirect:/game/guess?sessionId=" + sessionId;
+        }
 
         return "redirect:/game/play?sessionId=" + sessionId + "&questionId=" + nextQuestionId;
     }
