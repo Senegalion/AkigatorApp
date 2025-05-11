@@ -30,6 +30,8 @@ public class GameController {
     private final EntityRepository entityRepository;
     private final AnswerRepository answerRepository;
 
+    private String latestGuess = null;
+
     @Autowired
     public GameController(GameSessionRepository gameSessionRepository, QuestionRepository questionRepository, CategoryRepository categoryRepository, UserRepository userRepository, EntityRepository entityRepository, AnswerRepository answerRepository) {
         this.gameSessionRepository = gameSessionRepository;
@@ -193,6 +195,7 @@ public class GameController {
 
         ScriptResult result = runPythonScript("next", selectedAnswer.get().getAnswerId());
         if (result.getGuess() != null && !result.getGuess().isBlank()) {
+            latestGuess = result.getGuess();
             return "redirect:/game/guess?sessionId=" + sessionId;
         }
 
@@ -213,8 +216,9 @@ public class GameController {
             return "error";
         }
 
-        ScriptResult scriptResult = runPythonScript("next", null);
-        String guess = scriptResult.getGuess() != null ? scriptResult.getGuess() : "Unknown Character";
+        String guess = latestGuess != null ? latestGuess : "Unknown Character";
+        System.out.println("GUESS from Python: " + guess);
+        latestGuess = null;
 
         model.addAttribute("sessionId", sessionId);
         model.addAttribute("guess", guess);
