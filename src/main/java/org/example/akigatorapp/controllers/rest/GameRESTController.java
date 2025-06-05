@@ -9,9 +9,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.time.OffsetDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/game")
@@ -42,8 +44,12 @@ public class GameRESTController {
     }
 
     @GetMapping("/categories")
-    public List<CategoryEntity> getAllCategories() {
-        return categoryRepository.findAll();
+    public List<CategoryDto> getAllCategories() {
+        List<CategoryEntity> categories = categoryRepository.findAll();
+
+        return categories.stream()
+                .map(category -> new CategoryDto(category.getCategoryId(), category.getName(), category.getDescription()))
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/start")
@@ -67,7 +73,13 @@ public class GameRESTController {
         session.setResult(ResultName.UNRESOLVED);
 
         gameSessionRepository.saveAndFlush(session);
-        return ResponseEntity.ok(session);
+        return ResponseEntity.ok(new GameSessionDto(
+                session.getGameSessionId(),
+                session.getCategory().getName(),
+                session.getStartTime().toString(),
+                session.getDuration(),
+                session.getResult().toString()
+        ));
     }
 
     @GetMapping("/play")
@@ -88,8 +100,8 @@ public class GameRESTController {
 
         List<AnswerEntity> answers = answerRepository.findByQuestion(currentQuestion);
         return ResponseEntity.ok(Map.of(
-                "question", currentQuestion,
-                "answers", answers
+                "question", new QuestionDto(currentQuestion),
+                "answers", answers.stream().map(AnswerDto::new).toList()
         ));
     }
 
@@ -155,32 +167,55 @@ public class GameRESTController {
         if (userOpt.isEmpty()) return ResponseEntity.status(401).body("Unauthorized");
 
         List<GameSessionEntity> allSessions = gameSessionRepository.findByUser(userOpt.get());
-        Map<String, Object> result = new HashMap<>();
 
-        result.put("wins", allSessions.stream()
+        List<GameSessionDto> wins = allSessions.stream()
                 .filter(s -> s.getResult() == ResultName.WIN)
                 .sorted(Comparator.comparing(GameSessionEntity::getStartTime).reversed())
-                .toList());
+                .map(this::mapToDto)
+                .toList();
 
-        result.put("losses", allSessions.stream()
+        List<GameSessionDto> losses = allSessions.stream()
                 .filter(s -> s.getResult() == ResultName.LOSS)
                 .sorted(Comparator.comparing(GameSessionEntity::getStartTime).reversed())
-                .toList());
+                .map(this::mapToDto)
+                .toList();
 
-        result.put("topWins", allSessions.stream()
-                .filter(s -> s.getResult() == ResultName.WIN)
-                .sorted(Comparator.comparing(GameSessionEntity::getStartTime).reversed())
-                .limit(3)
-                .toList());
+        List<GameSessionDto> topWins = wins.stream().limit(3).toList();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("wins", wins);
+        result.put("losses", losses);
+        result.put("topWins", topWins);
 
         return ResponseEntity.ok(result);
     }
 
+    private GameSessionDto mapToDto(GameSessionEntity session) {
+        String duration = "N/A";
+        if (session.getEndTime() != null) {
+            long seconds = session.getEndTime().toEpochSecond() - session.getStartTime().toEpochSecond();
+            long minutes = seconds / 60;
+            long remainingSeconds = seconds % 60;
+            duration = String.format("%d:%02d", minutes, remainingSeconds);
+        }
+
+        return new GameSessionDto(
+                session.getGameSessionId(),
+                session.getCategory().getName(),
+                session.getStartTime().toString(),
+                duration,
+                session.getResult().name()
+        );
+    }
+
     private ScriptResult runPythonScript(String mode, Long answerId) {
         try {
+            String projectRoot = new File(".").getCanonicalPath();
+            String scriptPath = new File(projectRoot, "ml_service.py").getAbsolutePath();
+
             ProcessBuilder pb = (answerId == null)
-                    ? new ProcessBuilder("python", "C:\\AkigatorML\\AkigatorApp\\ml_service.py", "--mode", mode)
-                    : new ProcessBuilder("python", "C:\\AkigatorML\\AkigatorApp\\ml_service.py", "--mode", mode, "--answer_id", String.valueOf(answerId));
+                    ? new ProcessBuilder("python", scriptPath, "--mode", mode)
+                    : new ProcessBuilder("python", scriptPath, "--mode", mode, "--answer_id", String.valueOf(answerId));
 
             Process process = pb.start();
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));

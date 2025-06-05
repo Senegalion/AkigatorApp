@@ -21,7 +21,7 @@ public class JwtProvider {
 
     private SecretKey getSecretKey() {
         // Używamy metody 'secretKeyFor' do wygenerowania odpowiedniego klucza 512-bitowego
-        return Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
     public String generateJwtToken(Authentication authentication) {
