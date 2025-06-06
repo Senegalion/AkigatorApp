@@ -9,12 +9,12 @@ from sqlalchemy import create_engine, text
 # ---------------- CONFIG ---------------- #
 DB_USER = 'postgres'
 DB_PASSWORD = 'postgres'
-DB_HOST = 'localhost'
-DB_PORT = '5431'
+DB_HOST = 'postgres'
+DB_PORT = '5432'
 DB_NAME = 'akigator_db'
 CATEGORY_ID = 2
 NUM_OPTIONS = 5
-DATASET_PATH = os.path.join(os.path.dirname(__file__), "Animal Dataset.csv")
+DATASET_PATH = os.path.join(os.path.dirname(__file__), "Animal_Dataset.csv")
 
 engine = create_engine(
     f'postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'

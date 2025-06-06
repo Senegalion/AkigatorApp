@@ -210,8 +210,7 @@ public class GameRESTController {
 
     private ScriptResult runPythonScript(String mode, Long answerId) {
         try {
-            String projectRoot = new File(".").getCanonicalPath();
-            String scriptPath = new File(projectRoot, "ml_service.py").getAbsolutePath();
+            String scriptPath = new File("ml_service.py").getCanonicalPath();
 
             ProcessBuilder pb = (answerId == null)
                     ? new ProcessBuilder("python", scriptPath, "--mode", mode)

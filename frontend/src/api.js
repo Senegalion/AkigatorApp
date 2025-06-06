@@ -1,11 +1,11 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8091";
+const API_URL = "http://localhost:8080";
 
 export const sendResetPasswordEmail = async (email) => {
   try {
     const response = await axios.post(
-      `${API_URL}/auth/forgot-password`,
+      `${API_URL}/api/auth/forgot-password`,
       { email },
       { withCredentials: true }
     );

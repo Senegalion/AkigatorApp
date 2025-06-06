@@ -17,7 +17,7 @@ const GameResultsPage = () => {
   useEffect(() => {
     const fetchSessions = async () => {
       try {
-        const res = await axios.get("http://localhost:8091/api/game/sessions", {
+        const res = await axios.get("http://localhost:8080/api/game/sessions", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

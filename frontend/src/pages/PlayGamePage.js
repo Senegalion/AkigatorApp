@@ -19,7 +19,7 @@ const PlayGamePage = () => {
     async (questionId = null) => {
       setLoading(true);
       try {
-        const res = await axios.get("http://localhost:8091/api/game/play", {
+        const res = await axios.get("http://localhost:8080/api/game/play", {
           params: {
             sessionId,
             ...(questionId ? { questionId } : {}),
@@ -54,7 +54,7 @@ const PlayGamePage = () => {
   const handleAnswer = async (answerId) => {
     try {
       const res = await axios.post(
-        "http://localhost:8091/api/game/answer",
+        "http://localhost:8080/api/game/answer",
         {},
         {
           params: {
@@ -85,7 +85,7 @@ const PlayGamePage = () => {
   const handleGuessResponse = async (correct) => {
     try {
       await axios.post(
-        "http://localhost:8091/api/game/guess-result",
+        "http://localhost:8080/api/game/guess-result",
         {},
         {
           params: {
