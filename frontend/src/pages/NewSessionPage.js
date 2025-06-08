@@ -11,7 +11,7 @@ const NewSessionPage = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get("http://localhost:8080/api/game/categories", {
+      .get(`${process.env.REACT_APP_API_URL}/api/game/categories`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -34,7 +34,7 @@ const NewSessionPage = () => {
 
     try {
       const res = await axios.post(
-        `http://localhost:8080/api/game/start?categoryId=${selectedCategory}`,
+        `${process.env.REACT_APP_API_URL}/api/game/start?categoryId=${selectedCategory}`,
         {},
         {
           headers: {

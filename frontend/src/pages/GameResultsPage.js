@@ -17,11 +17,14 @@ const GameResultsPage = () => {
   useEffect(() => {
     const fetchSessions = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/api/game/sessions", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/game/sessions`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         setSessions(res.data);
       } catch (err) {
         setError("Failed to fetch game sessions.");

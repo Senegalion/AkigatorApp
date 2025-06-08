@@ -19,15 +19,18 @@ const PlayGamePage = () => {
     async (questionId = null) => {
       setLoading(true);
       try {
-        const res = await axios.get("http://localhost:8080/api/game/play", {
-          params: {
-            sessionId,
-            ...(questionId ? { questionId } : {}),
-          },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/game/play`,
+          {
+            params: {
+              sessionId,
+              ...(questionId ? { questionId } : {}),
+            },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         setQuestion(res.data.question);
         setAnswers(res.data.answers);
@@ -54,7 +57,7 @@ const PlayGamePage = () => {
   const handleAnswer = async (answerId) => {
     try {
       const res = await axios.post(
-        "http://localhost:8080/api/game/answer",
+        `${process.env.REACT_APP_API_URL}/api/game/answer`,
         {},
         {
           params: {
@@ -85,7 +88,7 @@ const PlayGamePage = () => {
   const handleGuessResponse = async (correct) => {
     try {
       await axios.post(
-        "http://localhost:8080/api/game/guess-result",
+        `${process.env.REACT_APP_API_URL}/api/game/guess-result`,
         {},
         {
           params: {

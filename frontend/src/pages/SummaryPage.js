@@ -23,7 +23,7 @@ const SummaryPage = () => {
     const fetchSummary = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8080/api/game/sessions/${sessionId}`,
+          `${process.env.REACT_APP_API_URL}/api/game/sessions/${sessionId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
