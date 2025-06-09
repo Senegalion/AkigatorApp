@@ -1,6 +1,10 @@
 # 🐊 Akigator - Interactive Web Application with Machine Learning  
 
-Akigator is an intelligent guessing game inspired by Akinator, where the computer asks questions to guess what you're thinking. Built using **Spring Boot, Thymeleaf, and a relational database**, it leverages **machine learning principles** to refine its guesses over time.  
+Akigator is an intelligent guessing game inspired by Akinator, where the computer asks questions to guess what you're thinking. Built using **Spring Boot** for the backend and **React with Tailwind CSS** for the frontend, it leverages **machine learning principles** to refine its guesses over time. Hosted and deployed on **AWS infrastructure** for scalability and reliability.
+
+## 🌐 Live Demo 
+You can try the app live here:
+👉 [live-demo](http://ec2-34-238-157-217.compute-1.amazonaws.com/) (hosted on AWS)
 
 ## 🚀 Features  
 
@@ -19,10 +23,12 @@ Akigator is an intelligent guessing game inspired by Akinator, where the compute
 ## 🛠️ Tech Stack  
 
 - **Backend**: Java, Spring Boot, Spring Security  
-- **Frontend**: Thymeleaf, Bootstrap  
-- **Database**: PostgreSQL  
+- **Frontend**: React, JavaScript, Tailwind CSS
+- **Database**: PostgreSQL (hosted on AWS)
 - **Authentication**: Spring Security  
-- **Version Control**: Git & GitHub  
+- **Machine Learning**: Integrated ML models on backend
+- **Cloud Infrastructure**: AWS (EC2, RDS, S3, etc.)
+- **Version Control**: Git & GitHub
 
 ## 🔧 Installation & Setup  
 
@@ -30,34 +36,55 @@ Akigator is an intelligent guessing game inspired by Akinator, where the compute
    ```bash
    git clone https://github.com/your-username/akigator.git
    cd akigator
-Set up the database:
 
-Ensure PostgreSQL is installed and running.
-Create a database and update application.properties with your credentials.
-Run the application:
-./mvnw spring-boot:run
-Access the app:
+2. Backend setup:
 
-Open http://localhost:8080 in your browser.
-📂 Folder Structure
-/akigator
-│-- src/main/java/org/example/akigatorapp   # Backend logic
-│-- src/main/resources/templates            # Thymeleaf templates (HTML)
-│-- src/main/resources/static               # CSS, JS, and assets
-│-- src/main/resources/application.properties # Configuration
-│-- README.md         
-📸 Screenshots
+   - Configure PostgreSQL on Docker (local or AWS RDS).
+   - Update backend configuration in src/main/resources/application.properties.
+   - Run backend:
+      ```bash
+      ./mvnw spring-boot:run
+
+3. Frontend setup:
+
+   - Navigate to frontend directory:
+      ```bash
+      cd frontend
+   
+   - Install dependencies and start React app:
+      ```bash
+      npm install
+      npm start
+
+4. Access the app:
+
+   - Frontend usually runs on http://localhost:3000
+   
+   - Backend API on http://localhost:8080 (ensure CORS configured)
 
 
-🏗️ Future Improvements
-🔹 More accurate guessing algorithms
-🔹 Dark mode & improved UI/UX
-🔹 Mobile optimization
+## 📂 Folder Structure  
+/akigator  
+├── backend/  
+│   ├── src/main/java/org/example/akigatorapp  
+│   └── src/main/resources/application.properties  
+├── frontend/  
+│   ├── src/  
+│   ├── tailwind.config.js  
+│   └── package.json  
+└── README.md  
 
-🏆 Contributors
-👨‍💻 Your Name - Developer
-👨‍🎨 Team Members - UI/UX & Backend Support
 
-📬 Contact & Support
-For any issues or feature requests, please open an issue.
-Happy coding! 🚀
+## 🏗️ Future Improvements  
+🔹 More accurate guessing algorithms  
+🔹 Dark mode & improved UI/UX  
+🔹 Optimize for mobile devices  
+🔹 Enhance guessing algorithms with more advanced machine learning techniques  
+
+## 🏆 Contributors  
+👨‍💻 Łukasz Pelikan - Fullstack Java Developer  
+👨‍🎨 Ksawery Raszczak - Data Engineer  
+
+## 📬 Contact & Support  
+For any issues or feature requests, please open an issue.  
+Happy coding! 🚀  
