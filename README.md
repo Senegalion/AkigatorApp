@@ -8,6 +8,12 @@ You can try the app live here:
 
 ![image](https://github.com/user-attachments/assets/08705e3b-feb5-406b-9399-faac1e5d33b0)
 
+![image](https://github.com/user-attachments/assets/b817a7d1-6796-4dec-9e95-336768ee7194)
+
+![image](https://github.com/user-attachments/assets/77bc614b-a17e-45eb-9cb5-45c345383669)
+
+![image](https://github.com/user-attachments/assets/29572e7d-e51d-41e6-aa79-93b04c32506f)
+
 
 ## 🚀 Features  
 
