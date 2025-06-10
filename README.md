@@ -6,6 +6,9 @@ Akigator is an intelligent guessing game inspired by Akinator, where the compute
 You can try the app live here:
 👉 [live-demo](http://ec2-34-238-157-217.compute-1.amazonaws.com/) (hosted on AWS)
 
+![image](https://github.com/user-attachments/assets/08705e3b-feb5-406b-9399-faac1e5d33b0)
+
+
 ## 🚀 Features  
 
 ✅ **Interactive Q&A System** – The computer asks a series of questions to deduce your answer.  
